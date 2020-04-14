@@ -35,7 +35,7 @@ The geolocation format provided by RIPE IPmap is:
 |Command| Input | Description| Expected output| 
 |---|---|---|---|
 |getGeolocation| A string ("123.6.225.1") or an array of strings (["123.6.225.1", "12.6.22.1"]) for a more efficient querying| It returns the geolocation of the provided IPs| If you provide a string, you will get the location. If you provide an array, you will get back a dictionary of <IP, location> pairs. If RIPE IPmap doesn't have a geolocation for a given IP, or if the IP is anycast, the output for that IP will be "null"|
-|isAnycast| A string ("123.6.225.1") or an array of strings (["123.6.225.1", "12.6.22.1"]) for a more efficient querying| It returns a boolean for each of the provided IPs, each of which identifying if the IP is anycast or not.| If you provide a string, you will get a single boolean. If you provide an array, you will get back a dictionary of <IP, boolean> pairs. If RIPE IPmap doesn't have an answer for a given IP, the boolean for that IP will be "null"|
+|isAnycast| A string ("123.6.225.1") or an array of strings (["123.6.225.1", "12.6.22.1"]) for a more efficient querying| It returns a boolean (or null) for each of the provided IPs, each of which identifying if the IP is anycast or not.| If you provide a string, you will get a single boolean. If you provide an array, you will get back a dictionary of <IP, boolean> pairs. If RIPE IPmap doesn't have an answer for a given IP, the value for that IP will be "null"|
 |||||
 |||||
 |||||
