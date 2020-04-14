@@ -1,7 +1,7 @@
 {
   "name": "ipmapjs",
-  "version": "1.0.0",
-  "description": "A set of utilities to retrieve IP geolocation, IXPs, Facilities\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[C\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[Dinteract with RIPE IPmap\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~. In particular you can obtain the geolocation of an IP, IXPs and facilities where such IP is peering.",
+  "version": "1.0.1",
+  "description": "IPmap.js is a utility for interacting with the RIPE IPmap service offered by RIPE NCC. With this library you can ask for the geolocation of an IP, verify if an IP is part of an IXP peering lan, check where (IXPs and facilities) where an IP is peering. ",
   "main": "ipmap.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
