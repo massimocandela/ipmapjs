@@ -1,10 +1,12 @@
-var brembo = require('brembo');
-var axios = require('axios');
+const brembo = require('brembo');
+const axios = require('axios');
+const batchPromises = require('batch-promises');
 
-var host = "https://ipmap-api.ripe.net/v1/";
-var clientId = "ipmapjs";
 
-var getData = function (url) {
+const host = "https://ipmap-api.ripe.net/v1/";
+const clientId = "ipmapjs";
+
+const getData = function (url) {
     return axios({
         url,
         method: "GET",
@@ -13,8 +15,8 @@ var getData = function (url) {
         .then(data => data.data.data);
 };
 
-var getIXPs = function () {
-    var url = brembo.build(host, {
+const getIXPs = function () {
+    const url = brembo.build(host, {
         path: ["peeringdb", "ixps"],
         params: {
             clientId
@@ -24,8 +26,8 @@ var getIXPs = function () {
     return getData(url);
 };
 
-var getIXP = function (id) {
-    var url = brembo.build(host, {
+const getIXP = function (id) {
+    const url = brembo.build(host, {
         path: ["peeringdb", "ixps", id],
         params: {
             clientId
@@ -35,8 +37,8 @@ var getIXP = function (id) {
     return getData(url);
 };
 
-var getFacilities = function () {
-    var url = brembo.build(host, {
+const getFacilities = function () {
+    const url = brembo.build(host, {
         path: ["peeringdb", "facilities"],
         params: {
             clientId
@@ -46,8 +48,8 @@ var getFacilities = function () {
     return getData(url);
 };
 
-var getFacility = function (id) {
-    var url = brembo.build(host, {
+const getFacility = function (id) {
+    const url = brembo.build(host, {
         path: ["peeringdb", "facilities", id],
         params: {
             clientId
@@ -57,8 +59,8 @@ var getFacility = function (id) {
     return getData(url);
 };
 
-var getIXPsPeeringWithASN = function (asn) {
-    var url = brembo.build(host, {
+const getIXPsPeeringWithASN = function (asn) {
+    const url = brembo.build(host, {
         path: ["peeringdb", "ixps", "peerings", asn],
         params: {
             clientId
@@ -68,9 +70,9 @@ var getIXPsPeeringWithASN = function (asn) {
     return getData(url);
 };
 
-var getIXPFromIPs = function (ips) {
+const getIXPFromIPs = function (ips) {
 
-    var url = brembo.build(host, {
+    const url = brembo.build(host, {
         path: ["peeringdb", "ixps"],
         params: {
             resources: ips.join(","),
@@ -81,12 +83,12 @@ var getIXPFromIPs = function (ips) {
     return getData(url);
 };
 
-var getIXPFromIP = function (ip) {
+const getIXPFromIP = function (ip) {
     return getIXPFromIPs([ip])[ip];
 };
 
-var getASNsPeeringWithIXP = function (ixpId) {
-    var url = brembo.build(host, {
+const getASNsPeeringWithIXP = function (ixpId) {
+    const url = brembo.build(host, {
         path: ["peeringdb", "ixps", ixpId, "peerings"],
         params: {
             clientId
@@ -96,8 +98,8 @@ var getASNsPeeringWithIXP = function (ixpId) {
     return getData(url);
 };
 
-var getASNsHostedInFacility = function (facilityId) {
-    var url = brembo.build(host, {
+const getASNsHostedInFacility = function (facilityId) {
+    const url = brembo.build(host, {
         path: ["peeringdb", "facilities", facilityId, "customers"],
         params: {
             clientId
@@ -107,8 +109,8 @@ var getASNsHostedInFacility = function (facilityId) {
     return getData(url);
 };
 
-var getFacilitiesHostingASN = function (asn) {
-    var url = brembo.build(host, {
+const getFacilitiesHostingASN = function (asn) {
+    const url = brembo.build(host, {
         path: ["peeringdb", "facilities", "customers", asn],
         params: {
             clientId
@@ -118,8 +120,80 @@ var getFacilitiesHostingASN = function (asn) {
     return getData(url);
 };
 
+const isAnycast = function (ips) {
+    return _getGeolocation(ips)
+        .then(data => {
+            for (let ip in data) {
+                if (data[ip]){
+                    data[ip] = (!!data[ip] && !!data[ip].isAnycast);
+                }
+            }
+            return data;
+        })
+        .then(out => {
+            return (typeof(ips) === "string") ? out[ips] : out;
+        });
+};
+
+
+const getGeolocation = function (ips) {
+    return _getGeolocation(ips)
+        .then(data => {
+            for (let ip in data) {
+                if ((!!data[ip] && !!data[ip].isAnycast)){
+                    data[ip] = null;
+                }
+            }
+            return data;
+        })
+        .then(out => {
+            return (typeof(ips) === "string") ? out[ips] : out;
+        });
+}
+
+const _getGeolocation = function (ips) {
+    const listOfIps = (typeof(ips) === "string") ? [ips] : [...new Set(ips)]
+    const parallelFactor = 1;
+    const fraction = Math.ceil(listOfIps.length / parallelFactor);
+    const chunks = [...Array(fraction).keys()].map(n => listOfIps.slice(n * parallelFactor, (n + 1) * parallelFactor));
+    let out = {};
+
+    for (let ip of listOfIps) {
+        out[ip] = null;
+    }
+
+    return batchPromises(1, chunks, ips => {
+        const url = brembo.build(host, {
+            path: ["locate", "all"],
+            params: {
+                resources: ips.join(",")
+            }
+        });
+
+        return axios({
+            url,
+            method: "GET",
+            responseType: "json"
+        })
+            .then(rawData => {
+                const data = rawData.data.data;
+                const contributions = rawData.data.metadata.service.contributions;
+
+                for (let ip in contributions) {
+                    const anycast = (contributions[ip].engines || []).filter(i => i.engine === "simple-anycast").map(i => i.metadata);
+                    const isAnycast = anycast.some(i => !!i.anycast);
+
+                    out[ip] = isAnycast ? { isAnycast } : data[ip] || null;
+                }
+            })
+    })
+        .then(() => out);
+}
+
 
 module.exports = {
+    isAnycast,
+    getGeolocation,
     getIXPs,
     getIXP,
     getFacilities,
@@ -131,6 +205,3 @@ module.exports = {
     getFacilitiesHostingASN,
     getASNsHostedInFacility
 }
-
-
-
