@@ -1,0 +1,29 @@
+{
+  "name": "ipmapjs",
+  "version": "1.0.0",
+  "description": "A set of utilities to retrieve IP geolocation, IXPs, Facilities\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[C\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[D\u001b[Dinteract with RIPE IPmap\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~\u001b[3~. In particular you can obtain the geolocation of an IP, IXPs and facilities where such IP is peering.",
+  "main": "ipmap.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/massimocandela/ipmapjs.git"
+  },
+  "keywords": [
+    "ipmap",
+    "ip",
+    "geolocation",
+    "network"
+  ],
+  "author": "Massimo Candela",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/massimocandela/ipmapjs/issues"
+  },
+  "homepage": "https://github.com/massimocandela/ipmapjs#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "brembo": "^2.0.3"
+  }
+}
