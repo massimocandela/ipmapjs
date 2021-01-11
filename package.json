@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/massimocandela/ipmapjs#readme",
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "batch-promises": "0.0.3",
     "brembo": "^2.0.3"
   }
